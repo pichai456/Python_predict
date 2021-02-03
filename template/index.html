@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ระบบแนะนำสาขาวิศวกรรมศาสตร์</title>
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/app.css' %}" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="py-5 text-center">
+        <h2>
+          ระบบแนะนำสาขาสำหรับวิศวกรรมศาสตร์ มหาวิทยาลัยเทคโนโลยีราชมงคลธัญบุรี
+        </h2>
+        <p class="lead">
+          ระบบจะทำการแนะนำสาขาวิชาที่เหมาะสมด้วยผลการเรียนแต่ละวิชาวิศวกรรมพื้นฐานชั้นปีที่
+          1 พร้อมกับทำนายเกรดเฉลี่ยจบในอนาคต
+        </p>
+        <form action="predict" method="post">
+          <table class="table table-striped table-bordered" style="width: 100%">
+            <thead>
+              <tr>
+                <th>รายวิชาที่</th>
+                <th>วิชา</th>
+                <th>ผลการเรียน</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% for x in course %}
+              <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{x}}</td>
+                <td>
+                  <div>
+                    <select class="form-control form-control-sm" name="{{x}}">
+                      <option value="select" selected>เลือก</option>
+                      <option value="4.0">A</option>
+                      <option value="3.5">B+</option>
+                      <option value="3.0">B</option>
+                      <option value="2.5">C+</option>
+                      <option value="2.0">C</option>
+                      <option value="1.5">D+</option>
+                      <option value="1.0">D</option>
+                      <option value="0.0">F</option>
+                    </select>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+              <tr>
+                <th>รายวิชาที่</th>
+
+                <th>วิชา</th>
+                <th>ผลการเรียน</th>
+              </tr>
+            </tfoot>
+          </table>
+          <input class="btn btn-success" type="submit" value="ทำนาย" />
+          <input class="btn btn-success" type="submit" value="รีเซต" />
+        </form>
+
+        <div class="col-md-5 col-lg-4">
+          <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-muted">ผลลัพธ์จากการทำนาย</span>
+          </h4>
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <b>สาขาวิชา:</b>
+                </div>
+                <div class="col" id="major_result">วิศวกรรมคอมพิวเตอร์</div>
+              </div>
+              <div class="row pt-3">
+                <div class="col">
+                  <b>เกรดเฉลี่ยที่ทำนาย:</b>
+                </div>
+                <div class="col" id="gpa_graduat_result">3.00</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
