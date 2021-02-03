@@ -6,6 +6,6 @@ from project_App import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.lists, name='HomePage'),
-    path('predict/', views.predict, name='predict'),
+    path('predicts/', views.predicts, name='predicts'),
     path('display/', views.display, name='display'),
 ]
