@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models,connection
 
 # Create your models here.
 class Datastudent(models.Model):

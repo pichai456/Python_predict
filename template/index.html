@@ -1,4 +1,5 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -8,6 +9,7 @@
     <!-- Bootstrap core CSS -->
     <link href="{% static 'css/app.css' %}" rel="stylesheet" />
   </head>
+
   <body>
     <div class="container">
       <div class="py-5 text-center">
@@ -34,7 +36,7 @@
             </thead>
 
             <tbody>
-              {% for x in course %}
+              {% for x in context.course %}
               <tr>
                 <td>{{forloop.counter}}</td>
                 <td>{{x}}</td>
@@ -64,6 +66,7 @@
                       type="text"
                       name="GPA"
                       class="form-control form-control-sm"
+                      placeholder="X.XX"
                     />
                   </div>
                 </td>
@@ -79,10 +82,10 @@
             </tfoot>
           </table>
           <input class="btn btn-success" type="submit" value="ทำนาย" />
-          <input class="btn btn-success" type="submit" value="รีเซต" />
+          <input class="btn btn-success" type="reset" value="รีเซต" />
         </form>
-
-        <div id="predict" class="col-md-5 col-lg-4">
+        <h1>{{labelvalue}}</h1>
+        <div class="col-md-5 col-lg-auto">
           <h4 class="d-flex justify-content-between align-items-center mb-3">
             <span class="text-muted">ผลลัพธ์จากการทำนาย</span>
           </h4>
@@ -92,13 +95,15 @@
                 <div class="col">
                   <b>สาขาวิชา:</b>
                 </div>
-                <div class="col" id="major_result">วิศวกรรมคอมพิวเตอร์</div>
+                <div class="col" id="major_result">{{labelvalue.สาขา}}</div>
               </div>
               <div class="row pt-3">
                 <div class="col">
                   <b>เกรดเฉลี่ยที่ทำนาย:</b>
                 </div>
-                <div class="col" id="gpa_graduat_result">3.00</div>
+                <div class="col" id="gpa_graduat_result">
+                  {{labelvalue.GPA_Pre}}
+                </div>
               </div>
             </div>
           </div>

@@ -5,7 +5,7 @@ from project_App import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.lists, name='HomePage'),
+    path('', views.index, name='HomePage'),
     path('predicts/', views.predicts, name='predicts'),
-    path('display/', views.display, name='display'),
+    # path('display/', views.display, name='display'),
 ]
