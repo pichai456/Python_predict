@@ -1,9 +1,10 @@
 from django.shortcuts import render
 import pandas as pd
 from .models import Datastudent
-from .model.Knn import *
+from .model.model_predict import *
 from django.db import connection
 # Create your views here.
+
 context = {'course':[
         'Society and Environment',
         'English for Communication 1',
@@ -30,7 +31,7 @@ def predicts(request):
     context 
     if request.method == "POST":  
         temp={}
-        temp['GPA']                                 =request.POST.get('GPA')
+        temp['GPA']                            =request.POST.get('GPA')
         temp['Society and Environment']             =request.POST.get('Society and Environment')
         temp['English for Communication 1']         =request.POST.get('English for Communication 1')
         temp['Recreation']                          =request.POST.get('Recreation')
@@ -56,6 +57,6 @@ def predicts(request):
     modelOdject = branch(df,departmentListRequirement)
     df_predi = pre_model(modelOdject,inputData)
     labelvalue = select_branch(df_predi)
-    # labelvalue.columns = [''] * len(labelvalue.columns)
+    labelvalue= labelvalue.to_dict('records')[0] 
     print(labelvalue)
     return render(request, 'index.html',{'labelvalue':labelvalue,'context':context})

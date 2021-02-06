@@ -4,8 +4,8 @@ from django.conf.urls import url
 from project_App import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', views.index, name='HomePage'),
-    path('predicts/', views.predicts, name='predicts'),
-    # path('display/', views.display, name='display'),
+    # path('admin/', admin.site.urls),
+    url(r'^$', views.index, name='HomePage'),
+    url(r'predicts/', views.predicts, name='predicts'),
+    
 ]

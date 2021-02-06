@@ -3,10 +3,13 @@ import numpy as np
 from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score, KFold
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LinearRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder, StandardScaler,Normalizer
 from sklearn.metrics import accuracy_score, precision_score, recall_score, classification_report
 from project_App.models import Datastudent
 from django.db import connection
+
 
 def cleanData():
     query = str(Datastudent.objects.all().query)
@@ -39,23 +42,7 @@ def cleanData():
     df['GPA จบlevel'] = grade    
     return df,departmentListRequirement
 
-def branch(df,departmentListRequirement):
-    modelOdject = []
-    for branch in departmentListRequirement:
-        print(branch)
-        knn_best = Model_Knn(branch, df)
-        branchNameML, modelMLinear, r_squared, intercept, slope = Model_Regression(branch, df)
-        modelOdject.append({
-            'Name':             branch,
-            'model':           knn_best, 
-            'modelMLinear': modelMLinear,
-            'r_squared' : r_squared,
-            'intercept' : intercept,
-            'slope' : slope    
-        })
-    return modelOdject
-
-def Model_Knn(branch, df):
+def model_Knn(branch, df):
     df = df[df['ภาควิชา'] == branch]
     df = df.reset_index(drop=True)
 
@@ -69,24 +56,15 @@ def Model_Knn(branch, df):
         'สาขาวิชา', 
         'ปีเข้าศึกษา',
         'GPA จบlevel',], axis=1).values
-    
     y = df['GPA จบlevel'].values
-
-    # X_train, X_test, y_train, y_test = train_test_split(X, y,test_size=0.32 , random_state=26)
-    
-    param_grid = dict(n_neighbors=range(1, 51))
-    
+        
+    param_grid = dict(n_neighbors=range(1, 20))
     knn = KNeighborsClassifier(metric='euclidean')
-    knn_best = GridSearchCV(knn, param_grid, cv=10)
-    knn_best.fit(X, y)
-    # y_pred = knn_best.predict(X_test)
-    # accuracy = accuracy_score(y_test, y_pred)
-    # precision = precision_score(y_test, y_pred, average="macro")
-    # recall = recall_score(y_test, y_pred,average="macro")
-    
-    return  knn_best
+    model = GridSearchCV(knn, param_grid, cv=10)
+    model.fit(X, y)
+    return  model
 
-def Model_Regression(branch, df):
+def model_Regression(branch, df):
     df = df[df["ภาควิชา"] == branch]
     df = df.reset_index(drop=True)
 
@@ -126,8 +104,79 @@ def Model_Regression(branch, df):
 
     return branch, model, r_squared, intercept, slope
 
+def model_Dtree(branch, df):
+    df = df[df['ภาควิชา'] == branch]
+    df = df.reset_index(drop=True)
+    X = df.drop([
+        'รหัสนักศึกษา',
+        'GPA จบ', 
+        'id_departments', 
+        'ภาควิชา', 
+        'id_branch',
+        'รหัสสาขา', 
+        'สาขาวิชา', 
+        'ปีเข้าศึกษา',
+        'GPA จบlevel',], axis=1).values
+    y = df['GPA จบlevel'].values
+
+    model = DecisionTreeClassifier(
+        criterion="entropy",
+        splitter='best',
+        max_depth=5,
+        min_samples_split=2,
+        min_samples_leaf=1,
+        min_weight_fraction_leaf=0,
+        max_features=None,
+        random_state=None,
+        max_leaf_nodes=None,
+        min_impurity_decrease=0,
+        min_impurity_split=None,
+        class_weight=None,
+    )
+    model.fit(X, y)
+    return model
+    
+def model_NN(branch, df):
+    df = df[df['ภาควิชา'] == branch]
+    df = df.reset_index(drop=True)
+    X = df.drop([
+        'รหัสนักศึกษา',
+        'GPA จบ', 
+        'id_departments', 
+        'ภาควิชา', 
+        'id_branch',
+        'รหัสสาขา', 
+        'สาขาวิชา', 
+        'ปีเข้าศึกษา',
+        'GPA จบlevel',], axis=1).values
+    y = df['GPA จบlevel'].values
+    
+    model = MLPClassifier(hidden_layer_sizes=13, max_iter=500)
+    model.fit(X, y)
+    
+    return  model
+    
+def branch(df,departmentListRequirement):
+    modelOdject = []
+    for branch in departmentListRequirement:
+        print(branch)
+        model = model_Knn(branch, df)
+        # model = model_Dtree(branch, df)
+        # model = model_NN(branch, df)
+        branchNameML, modelMLinear, r_squared, intercept, slope = model_Regression(branch, df)
+        modelOdject.append({
+            'Name':             branch,
+            'model':           model, 
+            'modelMLinear': modelMLinear,
+            'r_squared' : r_squared,
+            'intercept' : intercept,
+            'slope' : slope    
+        })
+    return modelOdject    
+    
 def pre_model(modelOdject,inputData):
     # Dataframe แสดง ผลลัพท์
+    print([inputData])
     df_predi = pd.DataFrame(columns=[
         'สาขา',
         'ผลการเรียน 2.00 - 2.75',
@@ -138,6 +187,7 @@ def pre_model(modelOdject,inputData):
     # loop นำค่าใน ModelOdject มาใส่ Dataframe
     for i in modelOdject:
         # ทำนาย
+
         answer = i['model'].predict([inputData])
         answer_mlinear = i['modelMLinear'].predict([inputData])[0]
         
@@ -179,3 +229,4 @@ def select_branch(df_predi):
             count -= 1
         
     return labelvalue
+

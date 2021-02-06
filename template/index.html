@@ -2,113 +2,152 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ระบบแนะนำสาขาวิศวกรรมศาสตร์</title>
-    <!-- Bootstrap core CSS -->
-    <link href="{% static 'css/app.css' %}" rel="stylesheet" />
-  </head>
 
-  <body>
-    <div class="container">
-      <div class="py-5 text-center">
-        <h2>
-          ระบบแนะนำสาขาสำหรับวิศวกรรมศาสตร์ มหาวิทยาลัยเทคโนโลยีราชมงคลธัญบุรี
-        </h2>
-        <p class="lead">
-          ระบบจะทำการแนะนำสาขาวิชาที่เหมาะสมด้วยผลการเรียนแต่ละวิชาวิศวกรรมพื้นฐานชั้นปีที่
-          1 พร้อมกับทำนายเกรดเฉลี่ยจบในอนาคต
-        </p>
-        <form
-          action="{% url 'predicts' %}"
-          method="post"
-          enctype="multipart/form-data"
-        >
-          {% csrf_token %}
-          <table class="table table-striped table-bordered" style="width: 100%">
-            <thead>
-              <tr>
-                <th>รายวิชาที่</th>
-                <th>วิชา</th>
-                <th>ผลการเรียน</th>
-              </tr>
-            </thead>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ระบบแนะนำสาขาวิศวกรรมศาสตร์</title>
+  <link href="{% static 'css/app.css' %}" rel="stylesheet" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+</head>
 
-            <tbody>
-              {% for x in context.course %}
-              <tr>
-                <td>{{forloop.counter}}</td>
-                <td>{{x}}</td>
-                <td>
-                  <div>
-                    <select class="form-control form-control-sm" name="{{x}}">
-                      <option value="select" selected>เลือก</option>
-                      <option value="4.0">A</option>
-                      <option value="3.5">B+</option>
-                      <option value="3.0">B</option>
-                      <option value="2.5">C+</option>
-                      <option value="2.0">C</option>
-                      <option value="1.5">D+</option>
-                      <option value="1.0">D</option>
-                      <option value="0.0">F</option>
-                    </select>
-                  </div>
-                </td>
-              </tr>
-              {% endfor %}
-              <tr>
-                <td>17</td>
-                <td>GPA</td>
-                <td>
-                  <div>
-                    <input
-                      type="text"
-                      name="GPA"
-                      class="form-control form-control-sm"
-                      placeholder="X.XX"
-                    />
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <th>รายวิชาที่</th>
+<body>
 
-                <th>วิชา</th>
-                <th>ผลการเรียน</th>
-              </tr>
-            </tfoot>
-          </table>
-          <input class="btn btn-success" type="submit" value="ทำนาย" />
-          <input class="btn btn-success" type="reset" value="รีเซต" />
-        </form>
-        <h1>{{labelvalue}}</h1>
-        <div class="col-md-5 col-lg-auto">
-          <h4 class="d-flex justify-content-between align-items-center mb-3">
-            <span class="text-muted">ผลลัพธ์จากการทำนาย</span>
-          </h4>
-          <div class="card">
-            <div class="card-body">
-              <div class="row">
-                <div class="col">
-                  <b>สาขาวิชา:</b>
+  <nav class="navbar navbar-expand-lg navbar-dark badge-dark">
+    <a class="navbar-brand" href="#">ระบบแนะนำสาขาสำหรับวิศวกรรมศาสตร์</a>
+    <a href="#predict" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </a>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#predict">ผลการทำนาย</a>
+        </li>
+      </ul>
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+        Login
+      </button>
+      </form>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="py-5 text-center">
+      <h2>
+        ระบบแนะนำสาขาสำหรับวิศวกรรมศาสตร์มหาวิทยาลัยราชมงคลเทคโนโลยีธัญบุรี
+      </h2>
+      <p>
+        ระบบจะทำการแนะนำสาขาวิชาที่เหมาะสมด้วยผลการเรียนแต่ละวิชาวิศวกรรมพื้นฐานชั้นปีที่
+        1 พร้อมกับทำนายเกรดเฉลี่ยจบในอนาคต
+      </p>
+      <form action="{% url 'predicts' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table class="table table-striped table-bordered" style="width: 100%">
+          <thead>
+            <tr>
+              <th>รายวิชาที่</th>
+              <th>วิชา</th>
+              <th>ผลการเรียน</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for x in context.course %}
+            <tr>
+              <td><label for="{{forloop.counter}}">{{forloop.counter}}</label></td>
+              <td>{{x}}</td>
+              <td>
+                <div>
+                  <select class="form-control form-control-sm" name="{{x}}">
+                    <option value="4.0" selected>เลือก</option>
+                    // ต้อมาแก้
+                    <option value="4.0">A</option>
+                    <option value="3.5">B+</option>
+                    <option value="3.0">B</option>
+                    <option value="2.5">C+</option>
+                    <option value="2.0">C</option>
+                    <option value="1.5">D+</option>
+                    <option value="1.0">D</option>
+                    <option value="0.0">F</option>
+                  </select>
                 </div>
-                <div class="col" id="major_result">{{labelvalue.สาขา}}</div>
+              </td>
+            </tr>
+            {% endfor %}
+            <tr>
+              <td>17</td>
+              <td>GPA</td>
+              <td>
+                <div>
+                  <input type="text" name="GPA" class="form-control form-control-sm" placeholder="X.XX" value="4.00" />
+                </div>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>รายวิชาที่</th>
+              <th>วิชา</th>
+              <th>ผลการเรียน</th>
+            </tr>
+          </tfoot>
+        </table>
+        <input class="btn btn-success" type="submit" value="ทำนาย" />
+        <a class="btn btn-success" href="{% url 'HomePage' %}">รีเซต</a>
+        <!-- <input class="btn btn-success" type="reset" value="รีเซต" /> -->
+      </form>
+
+      <div class="col-md-5 col-lg-auto" id="predict">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+          <span class="text-muted">ผลลัพธ์จากการทำนาย</span>
+        </h4>
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col">
+                <b>สาขาวิชา:</b>
               </div>
-              <div class="row pt-3">
-                <div class="col">
-                  <b>เกรดเฉลี่ยที่ทำนาย:</b>
-                </div>
-                <div class="col" id="gpa_graduat_result">
-                  {{labelvalue.GPA_Pre}}
-                </div>
+              <div class="col" id="major_result">
+                {% if labelvalue %}{{labelvalue.สาขา}}
+                {% else %}ยังไม่ได้ใส่ข้อมูลเพื่อทำนาย
+                {% endif %}
+              </div>
+            </div>
+            <div class="row pt-3">
+              <div class="col">
+                <b>เกรดเฉลี่ยที่ทำนาย:</b>
+              </div>
+              <div class="col" id="gpa_graduat_result">
+                {% if labelvalue %}{{labelvalue.GPA_Pre}}
+                {% else %}ยังไม่ได้ใส่ข้อมูลเพื่อทำนาย
+                {% endif %}
               </div>
             </div>
           </div>
         </div>
       </div>
+
+
     </div>
-  </body>
+  </div>
+</body>
+<footer class="bg-light text-center text-lg-start">
+  <!-- Copyright -->
+  <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
+    © 2020 Copyright:
+    <a class="text-dark" href="https://ระบบแนะนำสาขาสำหรับวิศวกรรมศาสตร์
+      /">ระบบแนะนำสาขาสำหรับวิศวกรรมศาสตร์.com
+    </a>
+  </div>
+  <!-- Copyright -->
+</footer>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+  integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+  integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+  integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
 </html>
