@@ -80,14 +80,24 @@ WSGI_APPLICATION = 'back_end.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'datastudent',
+        'NAME': 'mrs_database',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': '572536',
         'HOST': 'localhost',
-        'PORT': '3306',
+        'PORT': '3308',
         'OPTIONS':{
         }
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'datastudent',
+    #     'USER': 'root',
+    #     'PASSWORD': '',
+    #     'HOST': 'localhost',
+    #     'PORT': '3306',
+    #     'OPTIONS':{
+    #     }
+    # }
 }
 
 

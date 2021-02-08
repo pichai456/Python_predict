@@ -7,5 +7,6 @@ urlpatterns = [
     # path('admin/', admin.site.urls),
     url(r'^$', views.index, name='HomePage'),
     url(r'predicts/', views.predicts, name='predicts'),
+    # url(r'predicts/', views.predicts, name='predicts'),
     
 ]

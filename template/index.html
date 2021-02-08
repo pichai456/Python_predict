@@ -43,6 +43,39 @@
         ระบบจะทำการแนะนำสาขาวิชาที่เหมาะสมด้วยผลการเรียนแต่ละวิชาวิศวกรรมพื้นฐานชั้นปีที่
         1 พร้อมกับทำนายเกรดเฉลี่ยจบในอนาคต
       </p>
+      {% if labelvalue %}
+      <div class="col-md-5 col-lg-auto" id="predict">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+          <span class="text-muted">ผลลัพธ์จากการทำนาย</span>
+        </h4>
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col">
+                <b>สาขาวิชา:</b>
+              </div>
+              <div class="col" id="major_result">
+                {% if labelvalue %}{{labelvalue.สาขา}}
+                {% else %}ยังไม่ได้ใส่ข้อมูลเพื่อทำนาย
+                {% endif %}
+              </div>
+            </div>
+            <div class="row pt-3">
+              <div class="col">
+                <b>เกรดเฉลี่ยที่ทำนาย:</b>
+              </div>
+              <div class="col" id="gpa_graduat_result">
+                {% if labelvalue %}{{labelvalue.GPA_Pre}}
+                {% else %}ยังไม่ได้ใส่ข้อมูลเพื่อทำนาย
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      {% endif %}
+      <br>
       <form action="{% url 'predicts' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <table class="table table-striped table-bordered" style="width: 100%">
@@ -61,7 +94,7 @@
               <td>
                 <div>
                   <select class="form-control form-control-sm" name="{{x}}">
-                    <option value="4.0" selected>เลือก</option>
+                    <option value="4.00" selected>เลือก</option>
                     // ต้อมาแก้
                     <option value="4.0">A</option>
                     <option value="3.5">B+</option>
@@ -99,35 +132,6 @@
         <!-- <input class="btn btn-success" type="reset" value="รีเซต" /> -->
       </form>
 
-      <div class="col-md-5 col-lg-auto" id="predict">
-        <h4 class="d-flex justify-content-between align-items-center mb-3">
-          <span class="text-muted">ผลลัพธ์จากการทำนาย</span>
-        </h4>
-        <div class="card">
-          <div class="card-body">
-            <div class="row">
-              <div class="col">
-                <b>สาขาวิชา:</b>
-              </div>
-              <div class="col" id="major_result">
-                {% if labelvalue %}{{labelvalue.สาขา}}
-                {% else %}ยังไม่ได้ใส่ข้อมูลเพื่อทำนาย
-                {% endif %}
-              </div>
-            </div>
-            <div class="row pt-3">
-              <div class="col">
-                <b>เกรดเฉลี่ยที่ทำนาย:</b>
-              </div>
-              <div class="col" id="gpa_graduat_result">
-                {% if labelvalue %}{{labelvalue.GPA_Pre}}
-                {% else %}ยังไม่ได้ใส่ข้อมูลเพื่อทำนาย
-                {% endif %}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
 
     </div>

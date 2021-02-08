@@ -52,5 +52,6 @@
   "files.associations": {
     "*.html": "html",
     "**/templates/**/*.html": "django-html"
-  }
+  },
+  "python.pythonPath": "C:\\Users\\picha\\anaconda3\\python.exe"
 }
