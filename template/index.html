@@ -96,6 +96,7 @@
                   <select class="form-control form-control-sm" name="{{x}}">
                     <option value="4.00" selected>เลือก</option>
                     // ต้อมาแก้
+                    <option value=''>ยังไม่ได้ลงเรียน</option>
                     <option value="4.0">A</option>
                     <option value="3.5">B+</option>
                     <option value="3.0">B</option>
@@ -103,37 +104,24 @@
                     <option value="2.0">C</option>
                     <option value="1.5">D+</option>
                     <option value="1.0">D</option>
-                    <option value="0.0">F</option>
+                    <option value='0.0'>F</option>
+                    <option value=''>W</option>
                   </select>
                 </div>
               </td>
             </tr>
             {% endfor %}
-            <tr>
-              <td>17</td>
-              <td>GPA</td>
-              <td>
-                <div>
-                  <input type="text" name="GPA" class="form-control form-control-sm" placeholder="X.XX" value="4.00" />
-                </div>
-              </td>
+
+            <th>รายวิชาที่</th>
+            <th>วิชา</th>
+            <th>ผลการเรียน</th>
             </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <th>รายวิชาที่</th>
-              <th>วิชา</th>
-              <th>ผลการเรียน</th>
-            </tr>
-          </tfoot>
+            </tfoot>
         </table>
         <input class="btn btn-success" type="submit" value="ทำนาย" />
         <a class="btn btn-success" href="{% url 'HomePage' %}">รีเซต</a>
         <!-- <input class="btn btn-success" type="reset" value="รีเซต" /> -->
       </form>
-
-
-
     </div>
   </div>
 </body>

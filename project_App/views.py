@@ -32,9 +32,7 @@ def index(request):
 def predicts(request):
     context 
     if request.method == "POST":
-        input_gpa=[]  
         temp={}
-        input_gpa.append(request.POST.get('GPA'))
         temp['society_and_environment']             =request.POST.get('Society and Environment')
         temp['english_for_communication_1']         =request.POST.get('English for Communication 1')
         temp['recreation']                          =request.POST.get('Recreation')
@@ -53,13 +51,12 @@ def predicts(request):
         temp['physics_laboratory_for_engineers_2']  =request.POST.get('Physics Laboratory for Engineers 2')
     else:
         print('method POST not woking ')
-    input_gpa = float(input_gpa[0]) #input GPA
-    input_studant = change_input(temp) #input course
 
+    input_gpa = calculat_gpa(temp) #input GPA
+    input_studant = change_input(temp) #input course
     input_predict, df, majors_requirement = data_set_df(input_studant, input_gpa)
     modelOdject = major_model(df, majors_requirement)
-    # print(modelOdject)
-    df_predi = pre_model(modelOdject,input_predict)
+    df_predi = pre_model(modelOdject, input_predict, input_gpa)
     labelvalue = select_branch(df_predi)
     labelvalue= labelvalue.to_dict('records')[0] 
     print(labelvalue)

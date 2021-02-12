@@ -15,15 +15,15 @@ def model_Knn(major, df):
     df = df.reset_index(drop=True)
 
     X = df.drop([
-        'GPAX',
+        'gpax',
         'GPAX_char',
-        'major_name', 
-        ], axis='columns').values
+        'major_name',
+    ], axis='columns').values
     y = df['GPAX_char'].values
         
-    param_grid = dict(n_neighbors=range(1, 10))
-    model = KNeighborsClassifier(metric='euclidean')
-    model = GridSearchCV(model, param_grid, cv=5)
+    # param_grid = dict(n_neighbors=range(1, 10))
+    model = KNeighborsClassifier(n_neighbors=20,metric='euclidean')
+    # model = GridSearchCV(model, param_grid, cv=5)
     # print(model.best_params_)
     model.fit(X, y)
     return  model
@@ -32,42 +32,37 @@ def model_Regression(major, df):
     df = df[df["major_name"] == major]
     df = df.reset_index(drop=True)
 
-    X = df.drop([
-        'GPAX',
-        'GPAX_char',
-        'major_name',
-    ], axis='columns')
+    X = df[['gpay1s2']].values
 
-    y = df['GPAX']
+    y = df['gpax'].values
 
     # สร้าง model
     model = LinearRegression()
 
     #Fitting Model
     model.fit(X,y)
-
     # วัดประสิทธิภาพ
-    y_pred = model.predict(X)
+    # y_pred = model.predict(X)
 
-    # ค่าสัมประสิทธิ์การตัดสินใจ
-    r_squared = model.score(X, y)
+    # # ค่าสัมประสิทธิ์การตัดสินใจ
+    # r_squared = model.score(X, y)
 
-    # intercept
-    intercept = model.intercept_
+    # # intercept
+    # intercept = model.intercept_
 
-    # slope ความลาดชัน ตามลำดับจำนวน column แกน X 
-    slope = model.coef_
+    # # slope ความลาดชัน ตามลำดับจำนวน column แกน X 
+    # slope = model.coef_
 
-    return major, model, r_squared, intercept, slope
+    return model
 
 def model_Dtree(major, df):
     df = df[df['major_name'] == major]
     df = df.reset_index(drop=True)
 
     X = df.drop([
-        'GPAX',
-        'GPAX_char',
-        'major_name', 
+            'gpax',
+            'GPAX_char',
+            'major_name',
         ], axis='columns').values
     y = df['GPAX_char'].values
 
@@ -93,10 +88,10 @@ def model_NN(major, df):
     df = df.reset_index(drop=True)
 
     X = df.drop([
-        'GPAX',
+        'gpax',
         'GPAX_char',
-        'major_name', 
-        ], axis='columns').values
+        'major_name',
+    ], axis='columns').values
     y = df['GPAX_char'].values
     
     model = MLPClassifier(hidden_layer_sizes=13, max_iter=500)
@@ -111,18 +106,18 @@ def major_model(df,majors_requirement):
         # model = model_Knn(major, df)
         model = model_Dtree(major, df)
         # model = model_NN(major, df)
-        branchNameML, modelMLinear, r_squared, intercept, slope = model_Regression(major, df)
+        modelMLinear = model_Regression(major, df)
         modelOdject.append({
             'Name':             major,
             'model':           model, 
             'modelMLinear': modelMLinear,
-            'r_squared' : r_squared,
-            'intercept' : intercept,
+            # 'r_squared' : r_squared,
+            # 'intercept' : intercept,
             # 'slope' : slope    
         })
     return modelOdject     
      
-def pre_model(modelOdject,input_predict):
+def pre_model(modelOdject, input_predict, input_gpa):
     # Dataframe แสดง ผลลัพท์
     df_predi = pd.DataFrame(columns=[
         'สาขา',
@@ -136,8 +131,8 @@ def pre_model(modelOdject,input_predict):
         # ทำนาย
 
         answer = i['model'].predict([input_predict])
-        answer_mlinear = i['modelMLinear'].predict([input_predict])[0]
-        
+        answer_mlinear = i['modelMLinear'].predict([[input_gpa]])[0]
+
         new_row = {
             'สาขา' : i['Name'],
             'ผลการเรียน 2.00 - 2.75' : 0,
